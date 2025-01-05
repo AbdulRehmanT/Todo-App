@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState } from "react";
 import TodoInput from "./todo-input";
 import TodoItem from "./todo-Item";
