@@ -12,18 +12,14 @@ interface Todo {
 export default function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
 
+  const getTodo = async () => {
+    const result = await axios("http://localhost:4000/todos");
+    const response = result.data;
+    console.log(response);
+    setTodos(response);
+  };
   useEffect(() => {
-    const getTodo = async () => {
-      try {
-        const result = await axios("http://localhost:4000/todos");
-        const response = result.data;
-        console.log(response);
-        setTodos(response)
-      } catch (err) {
-        console.error(err);
-      }
-      getTodo();
-    };
+    getTodo();
   }, []);
 
   return (
