@@ -1,5 +1,5 @@
 import express from "express";
-import cors from 'cors'
+import cors from "cors";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -17,13 +17,22 @@ app.get("/api/v1/todos", (req, res) => {
 
 // Add Todo Route
 app.post("/api/v1/todo", (req, res) => {
-  const obj = {
-    id: String(new Date().getTime()),
-    todoContent: req.body.todo,
-  };
+  try {
+    const obj = {
+      id: String(new Date().getTime()),
+      todoContent: req.body.todo,
+    };
 
-  todo.push(obj);
-  res.send({ data: obj, message: "Todo Added Successfully!" });
+    if (!obj.todoContent) {
+      return res.status(404).send({ message: "Todo content is required!" });
+    }
+
+    todo.push(obj);
+    res.send({ data: obj, message: "Todo Added Successfully!" });
+  } catch (err) {
+    console.error(err);
+    res.status(404).send({ message: "Internal Server Error" });
+  }
 });
 
 // Edit Route
