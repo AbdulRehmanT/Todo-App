@@ -7,7 +7,13 @@ const port = process.env.PORT || 4000;
 const todo = [];
 
 app.use(express.json());
-app.use(cors({ origin: "https://todo-app-frontend-orcin.vercel.app/" }));
+app.use(cors({
+  origin: [
+    "https://todo-app-frontend-orcin.vercel.app",
+    "http://localhost:3000"
+  ],
+}));
+
 
 // Get All Todo Route
 app.get("/api/v1/todos", (req, res) => {
