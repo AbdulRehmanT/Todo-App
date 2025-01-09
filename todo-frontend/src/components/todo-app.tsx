@@ -11,12 +11,12 @@ interface Todo {
 
 export default function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
 
-  const url = process.env.NEXT_PUBLIC_BACK_BASE_URL
+  const url = process.env.NEXT_PUBLIC_BACK_BASE_URL;
   if (!url) {
     setError("Having Issue in Backend.");
-    return;
+    return null;
   }
 
   const getTodo = async () => {
@@ -24,11 +24,10 @@ export default function TodoApp() {
       const result = await axios(`${url}/api/v1/todos`);
       const response = result.data;
       console.log(response);
-      setTodos(response);  
+      setTodos(response);
     } catch (err) {
-      setError('Failed to load Todos.')
+      setError("Failed to load Todos.");
     }
-    
   };
   useEffect(() => {
     getTodo();
