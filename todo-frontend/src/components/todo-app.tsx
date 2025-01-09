@@ -21,7 +21,7 @@ export default function TodoApp() {
 
   const getTodo = async () => {
     try {
-      const result = await axios( url);
+      const result = await axios(`${url}/api/v1/todos`);
       const response = result.data;
       console.log(response);
       setTodos(response);  
