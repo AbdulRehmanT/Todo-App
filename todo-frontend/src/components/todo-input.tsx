@@ -1,16 +1,21 @@
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import axios from "axios";
+import { useState } from "react";
 
 export default function TodoInput() {
+  const [todoValue,setTodoValue] = useState('')
   const url = process.env.NEXT_PUBLIC_BACK_BASE_URL;
 
   const addTodo = async (e) => {
     try {
       e.preventDefault();
-      const todoValue = e.target.children[1].value;
+      if(!todoValue.trim()){
+        console.log('Please enter a task!')
+        return
+      }
 
-      await axios.post(`${url}/id`);
+      await axios.post(`${url}api/v1/todo`);
     } catch (err) {
       console.error(err);
     }

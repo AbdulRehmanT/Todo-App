@@ -10,11 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "express": "^4.21.2",
-    "lucide-react": "^0.469.0",
-    "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
   }
 }
