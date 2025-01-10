@@ -16,7 +16,7 @@ const handleDelete = async (todo: Todo, setTodos: React.Dispatch<React.SetStateA
   const url = process.env.NEXT_PUBLIC_BACK_BASE_URL;
   try {
 
-    const response = await axios.delete(`${url}/api/v1/todo/${todo.id}`);
+    await axios.delete(`${url}/api/v1/todo/${todo.id}`);
 
 
     setTodos((prevTodos) => prevTodos.filter((item) => item.id !== todo.id));

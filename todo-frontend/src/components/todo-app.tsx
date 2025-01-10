@@ -28,12 +28,12 @@ export default function TodoApp() {
       setTodos(response.data);
       setMessage(response.message);
     } catch (err) {
-      setError("Failed to load Todos.");
+      setError(error);
     }
   };
   useEffect(() => {
     getTodo();
-  }, []);
+  }, [url]);
 
   return (
     <div className="container mx-auto p-2">
