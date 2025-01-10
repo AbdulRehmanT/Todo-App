@@ -27,8 +27,8 @@ export default function TodoApp() {
       console.log(response);
       setTodos(response.data);
       setMessage(response.message);
-    } catch (err) {
-      setError(error);
+    } catch (err:any) {
+      setError(err?.message || "unkown error");
     }
   };
   useEffect(() => {
@@ -40,10 +40,14 @@ export default function TodoApp() {
       <h1 className="text-2xl font-bold mb-4">Todo App</h1>
       <TodoInput setTodos={setTodos} />
       {todos.length > 0 ? (
-        todos.map((item) => <TodoItem key={item.id} todo={item} setTodos={setTodos}  />)
+        todos.map((item) => (
+          <TodoItem key={item.id} todo={item} setTodos={setTodos} />
+        ))
       ) : (
         <p className="text-sm text-gray-700 mt-4">{message}</p>
       )}
+
+      {error && <p className="text-sm text-red-500 mt-4">{error}</p>}
     </div>
   );
 }
