@@ -28,7 +28,7 @@ export default function TodoApp() {
       console.log(response);
       setTodos(response.data);
       setMessage(response.message);
-    } catch (err: any) {
+    } catch (err:any) {
       setError(err?.message || "unkown error");
     }
   },[url]);
