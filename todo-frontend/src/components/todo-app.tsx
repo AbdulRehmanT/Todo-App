@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TodoInput from "./todo-input";
 import TodoItem from "./todo-Item";
 import axios from "axios";
@@ -15,25 +15,26 @@ export default function TodoApp() {
   const [error, setError] = useState<string | null>(null);
 
   const url = process.env.NEXT_PUBLIC_BACK_BASE_URL;
-  if (!url) {
-    setError("Having Issue in Backend.");
-    return;
-  }
+ 
 
-  const getTodo = async () => {
+  const getTodo = useCallback(async () => {
+    if (!url) {
+      setError("Having Issue in Backend.");
+      return;
+    }
     try {
       const result = await axios(`${url}/api/v1/todos`);
       const response = result.data;
       console.log(response);
       setTodos(response.data);
       setMessage(response.message);
-    } catch (err:any) {
+    } catch (err: any) {
       setError(err?.message || "unkown error");
     }
-  };
+  },[url]);
   useEffect(() => {
     getTodo();
-  }, [url]);
+  }, [getTodo]);
 
   return (
     <div className="container mx-auto p-2">
