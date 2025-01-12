@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors({
   origin: [
     "https://todo-app-frontend-orcin.vercel.app",
-    "http://localhost:3000"
+    "http://localhost:4000"
   ],
 }));
 

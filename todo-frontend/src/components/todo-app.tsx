@@ -15,9 +15,10 @@ export default function TodoApp() {
   const [error, setError] = useState<string | null>(null);
 
   const url = process.env.NEXT_PUBLIC_BACK_BASE_URL;
- 
-
+  console.log(url)
+  
   const getTodo = useCallback(async () => {
+
     if (!url) {
       setError("Having Issue in Backend.");
       return;
