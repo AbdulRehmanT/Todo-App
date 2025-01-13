@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 
+import './database.mjs'
+
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -9,8 +11,8 @@ const todo = [];
 app.use(express.json());
 app.use(cors({
   origin: [
-    "https://todo-app-frontend-orcin.vercel.app",
-    "http://localhost:4000"
+    process.env.BASE_URL,
+    process.env.BASE_URL_02
   ],
 }));
 
