@@ -1,7 +1,8 @@
 import express from "express";
+import "dotenv/config";
 import cors from "cors";
 
-import './database.mjs'
+import "./database.mjs";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -9,13 +10,11 @@ const port = process.env.PORT || 4000;
 const todo = [];
 
 app.use(express.json());
-app.use(cors({
-  origin: [
-    process.env.BASE_URL,
-    process.env.BASE_URL_02
-  ],
-}));
-
+app.use(
+  cors({
+    origin: [process.env.BASE_URL, process.env.BASE_URL_02],
+  })
+);
 
 // Get All Todo Route
 app.get("/api/v1/todos", (req, res) => {
