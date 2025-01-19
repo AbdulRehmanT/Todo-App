@@ -1,55 +1,134 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
-import TodoInput from "./todo-input";
-import TodoItem from "./todo-Item";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface Todo {
-  id: string;
+  _id: string;
   todoContent: string;
 }
-
 export default function TodoApp() {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [message, setMessage] = useState<string | null>(null);
+  const [todoContent, setTodoContent] = useState<string>("");
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const url = process.env.NEXT_PUBLIC_BACK_BASE_URL;
-  console.log(url)
-  
-  const getTodo = useCallback(async () => {
-
+  const url =
+    process.env.NEXT_PUBLIC_BACK_BASE_URL ||
+    process.env.NEXT_PUBLIC_BACK_BASE_URL_2;
+  // Fetch todos from the backend
+  useEffect(() => {
     if (!url) {
       setError("Having Issue in Backend.");
       return;
     }
+    const fetchTodos = async () => {
+      try {
+        const res = await axios.get(`${url}/api/v1/todos`);
+        setTodos(res.data.data);
+      } catch (error) {
+        console.error("Error fetching todos:", error);
+      }
+    };
+
+    fetchTodos();
+  }, []);
+
+  const handleAddTodo = async () => {
+    if (!todoContent) return;
     try {
-      const result = await axios(`${url}/api/v1/todos`);
-      const response = result.data;
-      console.log(response);
-      setTodos(response.data);
-      setMessage(response.message);
-    } catch (err:any) {
-      setError(err?.message || "unkown error");
+      await axios.post(`${url}/api/v1/todo`, {
+        todo: todoContent,
+      });
+      setTodoContent("");
+      // Refresh todos list
+      const res = await axios.get(`${url}/api/v1/todos`);
+      setTodos(res.data.data);
+    } catch (error) {
+      console.error("Error adding todo:", error);
     }
-  },[url]);
-  useEffect(() => {
-    getTodo();
-  }, [getTodo]);
+  };
+
+  const handleDeleteTodo = async (id:string) => {
+    try {
+      await axios.delete(`${url}/api/v1/todo/${id}`);
+      // Refresh todos list
+      const res = await axios.get(`${url}/api/v1/todos`);
+      setTodos(res.data.data);
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
+  };
+
+  const handleEditTodo = async () => {
+    if (!editingTodo || !editingTodo.todoContent) return;
+    try {
+      await axios.patch(`${url}api/v1/todo/${editingTodo._id}`, {
+        todoContent: editingTodo.todoContent,
+      });
+      setEditingTodo(null);
+      // Refresh todos list
+      const res = await axios.get(`${url}/api/v1/todos`);
+      setTodos(res.data.data);
+    } catch (error) {
+      console.error("Error editing todo:", error);
+    }
+  };
 
   return (
-    <div className="container mx-auto p-2">
-      <h1 className="text-2xl font-bold mb-4">Todo App</h1>
-      <TodoInput setTodos={setTodos} />
-      {todos.length > 0 ? (
-        todos.map((item) => (
-          <TodoItem key={item.id} todo={item} setTodos={setTodos} />
-        ))
-      ) : (
-        <p className="text-sm text-gray-700 mt-4">{message}</p>
-      )}
+    <div className="p-5 space-y-4">
+      <div className="flex space-x-4">
+        <Input
+          placeholder="New Todo"
+          value={todoContent}
+          onChange={(e) => setTodoContent(e.target.value)}
+        />
+        <Button onClick={handleAddTodo}>Add Todo</Button>
+      </div>
 
-      {error && <p className="text-sm text-red-500 mt-4">{error}</p>}
+      <div>
+        {todos.map((todo) => (
+          <div key={todo._id} className="flex justify-between space-x-4">
+            <p>{todo.todoContent}</p>
+            <div className="space-x-4">
+              <Button onClick={() => setEditingTodo(todo)}>Edit</Button>
+              <Button
+                variant="secondary"
+                onClick={() => handleDeleteTodo(todo._id)}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+          //   <Card key={todo._id} className="mb-4">
+          //     <CardHeader>
+          //       <Label>{todo.todoContent}</Label>
+          //     </CardHeader>
+          //     <CardDescription>
+          //       <Button onClick={() => setEditingTodo(todo)}>Edit</Button>
+          //       <Button onClick={() => handleDeleteTodo(todo._id)}>Delete</Button>
+          //     </CardDescription>
+          //   </Card>
+        ))}
+      </div>
+
+      {editingTodo && (
+        <div className="mt-4">
+          <h3>Edit Todo</h3>
+          <Input
+            placeholder="Edit Todo"
+            value={editingTodo.todoContent}
+            onChange={(e) =>
+              setEditingTodo({
+                ...editingTodo,
+                todoContent: e.target.value,
+              })
+            }
+          />
+          <Button onClick={handleEditTodo}>Update</Button>
+        </div>
+      )}
     </div>
   );
 }
