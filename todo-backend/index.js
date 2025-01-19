@@ -12,7 +12,7 @@ const todo = [];
 app.use(express.json());
 app.use(
   cors({
-    origin: [process.env.BASE_URL, process.env.BASE_URL_02],
+    origin: [process.env.BASE_URL_02, process.env.BASE_URL],
   })
 );
 
