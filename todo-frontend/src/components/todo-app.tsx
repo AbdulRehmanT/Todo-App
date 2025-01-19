@@ -18,11 +18,11 @@ export default function TodoApp() {
     process.env.NEXT_PUBLIC_BACK_BASE_URL ||
     process.env.NEXT_PUBLIC_BACK_BASE_URL_2;
   // Fetch todos from the backend
+  if (!url) {
+    setError("Having Issue in Backend.");
+    return;
+  }
   useEffect(() => {
-    if (!url) {
-      setError("Having Issue in Backend.");
-      return;
-    }
     const fetchTodos = async () => {
       try {
         const res = await axios.get(`${url}/api/v1/todos`);
@@ -33,7 +33,7 @@ export default function TodoApp() {
     };
 
     fetchTodos();
-  }, []);
+  }, [url]);
 
   const handleAddTodo = async () => {
     if (!todoContent) return;
@@ -50,7 +50,7 @@ export default function TodoApp() {
     }
   };
 
-  const handleDeleteTodo = async (id:string) => {
+  const handleDeleteTodo = async (id: string) => {
     try {
       await axios.delete(`${url}/api/v1/todo/${id}`);
       // Refresh todos list
@@ -61,10 +61,10 @@ export default function TodoApp() {
     }
   };
 
-  const handleEditTodo = async () => {
+  const handleEditTodo = async (id: string) => {
     if (!editingTodo || !editingTodo.todoContent) return;
     try {
-      await axios.patch(`${url}api/v1/todo/${editingTodo._id}`, {
+      await axios.patch(`${url}api/v1/todo/${id}`, {
         todoContent: editingTodo.todoContent,
       });
       setEditingTodo(null);
@@ -101,15 +101,6 @@ export default function TodoApp() {
               </Button>
             </div>
           </div>
-          //   <Card key={todo._id} className="mb-4">
-          //     <CardHeader>
-          //       <Label>{todo.todoContent}</Label>
-          //     </CardHeader>
-          //     <CardDescription>
-          //       <Button onClick={() => setEditingTodo(todo)}>Edit</Button>
-          //       <Button onClick={() => handleDeleteTodo(todo._id)}>Delete</Button>
-          //     </CardDescription>
-          //   </Card>
         ))}
       </div>
 
@@ -126,7 +117,7 @@ export default function TodoApp() {
               })
             }
           />
-          <Button onClick={handleEditTodo}>Update</Button>
+          <Button onClick={() => handleEditTodo(editingTodo._id)}>Update</Button>
         </div>
       )}
     </div>
